@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>果然新鲜</title>
+    <base th:href="@{/}"/>
+    <link th:href="@{/css/orange.css}" rel="stylesheet">
+    <link th:href="@{/css/share.css}" rel="stylesheet">
+    <script th:src="@{/js/jquery-1.12.3.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jquery.SuperSlide.2.1.1.js}"></script>
+
+    <!-- CSS
+	============================================ -->
+    <!-- Bootstrap CSS -->
+    <!--<link rel="stylesheet" href="assets/css/vendor/bootstrap.min.css">
+    &lt;!&ndash; FontAwesome &ndash;&gt;
+    <link rel="stylesheet" href="assets/css/vendor/font.awesome.min.css">
+    &lt;!&ndash; Ionicons &ndash;&gt;
+    <link rel="stylesheet" href="assets/css/vendor/ionicons.min.css">
+    &lt;!&ndash; Slick CSS &ndash;&gt;
+    <link rel="stylesheet" href="assets/css/plugins/slick.min.css">
+    &lt;!&ndash; Animation &ndash;&gt;
+    <link rel="stylesheet" href="assets/css/plugins/animate.min.css">
+    &lt;!&ndash; jQuery Ui &ndash;&gt;
+    <link rel="stylesheet" href="assets/css/plugins/jquery-ui.min.css">
+    &lt;!&ndash; Nice Select &ndash;&gt;
+    <link rel="stylesheet" href="assets/css/plugins/nice-select.min.css">
+    &lt;!&ndash; Magnific Popup &ndash;&gt;
+    <link rel="stylesheet" href="assets/css/plugins/magnific-popup.css">
+
+    <link rel="stylesheet" href="assets/css/style.css">-->
+    <style>
+        #comment-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .comment-item {
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .comment-title {
+            font-weight: bold;
+        }
+
+        .comment-time {
+            color: #999;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .comment-message {
+            margin-top: 10px;
+        }
+
+        #comment-form {
+            margin-top: 20px;
+        }
+
+        .comment-input {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            resize: vertical;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .comment-button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .comment-button:hover {
+            background-color: #0069d9;
+        }
+
+        .comment-button:active {
+            background-color: #0056b3;
+        }
+        #comment-list {
+            text-align: left;
+        }
+
+        .comment-item {
+            text-align: left;
+        }
+    </style>
+</head>
+
+<body>
+<div id="app">
+<!--顶部导航-->
+<div th:insert="header::header"></div>
+<!--顶部导航结束-->
+<!--banner图片-->
+<div class="her-banner">
+
+</div>
+<!--banner图片结束-->
+<!--主页内容-->
+<div class="content">
+    <div class="cont-top">
+        <div class="cont-left">
+            <div class="ctl-img">
+                <img th:src="@{'/'+${products.imgPath}}">
+            </div>
+            <div class="collect">
+                <div class="coll">
+                    <i class="iconfont">&#xe641;</i>
+                    收藏
+                </div>
+                <div class="coll">
+                    <i class="iconfont">&#xe617;</i>
+                    分享
+                    <div class="share">
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="cont-right">
+            <div class="J_productTitle title g_minor">
+                <span th:text="${products.name}"></span>
+                <span id="productQrCode" class="webSiteQrCode">&nbsp;
+                <div class="code">
+                    <img th:src="@{/images/qrCode%20(1).gif}">
+                    <p>扫描二微码</p>
+                </div>
+                </span>
+            </div>
+           <div class="pic">
+               <span class="ppi">价格:</span>
+               <span class="f-mallUnit">￥</span>
+               <span class="pcc" th:text="${products.newPrice}">29.00</span>
+           </div>
+            <!--<div class="pict">
+                <div class="f-proSatifySumWrap">
+                    <div class="f-satifyDetail">
+                        <span class="g_minor  salesVolume">评论：</span><span class="J_commNum">1</span>条
+                    </div>
+                    <div class="J_pdDetailBorder f-pdDetailBorder"></div>
+                </div>
+            </div>-->
+
+            <div class="fk-pd5MallCartCount">
+                <div class="f-cartbuyCountWrap">
+                    <span class="f-propName g_minor" style="width:75px;min-width:75px;max-width: 75px;">购买数量：</span>
+                    <input type="text"  value="1" class="g_itext cartBuyCount f-cartBuyCount">
+                </div>
+                <div class="f-buyCountBtn">
+                    <div  class="f-countBtn mallJian"></div>
+                    <div  class="f-countBtn disableMallJian"></div>
+                </div>
+            </div>
+            <div class="fk-pd5MallActBtns">
+                <div class="buttn butto">
+                    <a href="#" @click.prevent="addToCart" th:data-id="${id}" style="color:black;">加入购物车</a>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <div class="cont-bot">
+        <div class="hd">
+            <ul>
+                <li class="active">
+                    <div class="hd1 acti" >
+                    </div>
+                    产品详情
+                </li>
+                <li>
+                    <div class="hd1">
+                    </div>
+                    <a href="#" @click.prevent="page">产品评论</a>
+                </li>
+            </ul>
+
+        </div>
+        <div class="bd">
+            <div class="bd1"style="display: block">
+                <img th:src="@{'/'+${products.imgPath}}">
+            </div>
+
+            <div class="bd1">
+                <ul id="comment-list" >
+                    <li v-for="(comment, i) in commentList" :key="comment.id" class="comment-item">
+                        <p class="comment-title">{{ comment.title }}</p>
+                        <p class="comment-time">{{ comment.createTime | formatTime }}</p>
+                        <p class="comment-message">{{ comment.message }}</p>
+                    </li>
+                </ul>
+                <form id="comment-form" method="post">
+                    <input type="text" name="title" v-model="title" placeholder="你的昵称" style="height: 30px;margin-bottom:20px;float: left">
+                    <textarea v-model="commentText" placeholder="写下你的评论..." class="comment-input"></textarea>
+                    <button @click.prevent="submitComment" th:data-id="${id}" class="comment-button">发表评论</button>
+                </form>
+                <input type="hidden" th:value="${{id}}" id="pid">
+            </div>
+        </div>
+    </div>
+
+</div>
+<!--主页内容结束-->
+<!--底部-->
+    <div class="footer">
+        <div class="ft-con">
+            <div class="ft-top">
+                <img src="images/fot-1.jpg">
+            </div>
+            <div class="ft-bo">
+                <div class="ft-b">
+                    <h3>服务保障</h3>
+                    <p>正品保证</p>
+                    <p>7天无理由退换</p>
+                    <p>退货返运费</p>
+                    <p>7X15小时客户服务</p>
+
+                </div>
+                <div class="ft-b">
+                    <h3>支付方式</h3>
+                    <p>公司转账</p>
+                    <p>货到付款</p>
+                    <p>在线支付</p>
+                    <p>分期付款</p>
+
+                </div>
+                <div class="ft-b">
+                    <h3>商家服务</h3>
+                    <p>商家入驻</p>
+                    <p>培训中心</p>
+                    <p>广告服务</p>
+                    <p>服务市场</p>
+
+                </div>
+                <div class="ft-b">
+                    <h3>服务保障</h3>
+                    <p>免运费</p>
+                    <p>海外配送</p>
+                    <p>EMS</p>
+                    <p>211限时达</p>
+
+                </div>
+
+            </div>
+            <div class="banq">
+                <p>©2016 果然新鲜 版权所有</p>
+                <p>手机版 | 本站使用<span><img src="images/ft.jpg"></span>凡科建站搭建 | 管理登录</p>
+            </div>
+
+        </div>
+
+    </div>
+<!--底部结束-->
+</div>
+</body>
+</html>
+<script th:src="@{/js/orange.js}"></script>
+<script th:src="@{/js/axios.min.js}"></script>
+<script th:src="@{/js/vue-2.4.0.js}"></script>
+<script>
+
+    $(function (){
+        var imgPath= $(".ctl-img img").attr('src');
+        imgPath=imgPath.substring(imgPath.indexOf("images/"));
+        var name=$(".J_productTitle span").eq(0).text();
+        var price = $(".pcc").text();
+
+
+        var ainp =document.getElementsByClassName('f-countBtn')
+        var sel =document.getElementsByClassName('g_itext')[0]
+        ainp[0].onclick = function () {
+            var num1=parseInt(sel.value)
+            num1= num1 + 1
+            ainp[1].disabled =false;
+            ainp[1].style.cursor = 'auto';
+            sel.value=num1;
+            vm.quantity=num1;
+        };
+        ainp[1].onclick = function () {
+            var num1=parseInt(sel.value)
+            num1= num1 - 1
+            if(num1 < 1){
+                num1 = 1;
+                this.disabled = true;
+                this.style.cursor ='not-allowed'
+            }
+            sel.value=num1;
+            vm.quantity=num1;
+        }
+        //切换菜单
+        $('.hd li').click(function(){
+            $('.bd1').css('display','none')
+            $('.hd li').removeClass('active')
+            $('.hd1').removeClass('acti')
+            $('.bd1 ').eq($(this).index()).css('display','block')
+            $('.hd li').eq($(this).index()).addClass('active')
+            $('.hd1').eq($(this).index()).addClass('acti')
+
+        })
+        var navarrl=['70px','130px']
+        $('.lhd li').click(function(){
+            $('.lbd1').css('display','none')
+            $('.lhd li').removeClass('active')
+            $('.lbd1 ').eq($(this).index()).css('display','block')
+            $('.lhd li').eq($(this).index()).addClass('active')
+            $('.lhdbottom:eq(0)').css('left',navarrl[$(this).index()])
+
+        })
+        vm.pid=$("#pid").val();
+        vm.imgPath=imgPath;
+        vm.name=name;
+        vm.price=price;
+
+    })
+    var vm=new Vue({
+        el:"#app",
+        data:{
+            imgPath:'',
+            quantity:'',
+            name:'',
+            price:'',
+            commentText:'',
+            title:'',
+            pageNum:1,
+            pid:'',
+            commentList:[],
+            createTime:'',
+            message:''
+        },
+        methods:{
+            submitComment(){
+              /*let id = event.target.dataset.id;*/
+              var msg={
+                  "pid":this.pid,
+                  "title":this.title,
+                  "message":this.commentText,
+              }
+              axios.post("/FruitMall/CommentController/addComment",msg).then(date=>{
+                  this.page();
+              })
+
+                this.commentText = '';
+            },
+
+            addToCart(){
+                axios.post("/FruitMall/CartController/addToCart","imgPath="+this.imgPath+"&name="+this.name+"&price="+this.price+"&quantity="+this.quantity).then(date=>{
+                    /*console.log(date.date.message);*/
+                })
+            },
+            page(){
+                axios.post("/FruitMall/CommentController/findAll","pid="+this.pid+"&pageNum="+this.pageNum).then(data=>{
+                    this.commentList=data.data.data.list;
+                })
+            }
+        },
+        filters:{
+            formatTime(timestamp){
+                const date = new Date(timestamp);
+
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                const hours = String(date.getHours()).padStart(2, '0');
+                const minutes = String(date.getMinutes()).padStart(2, '0');
+                const seconds = String(date.getSeconds()).padStart(2, '0');
+
+                return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+            }
+        },
+        /*mounted(){
+            this.page()
+        }*/
+    })
+
+</script>

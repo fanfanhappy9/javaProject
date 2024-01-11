@@ -1,0 +1,202 @@
+﻿<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>购物车</title>
+    <meta name="robots" content="noindex, follow" />
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Favicon -->
+    <base th:href="@{/}"/>
+    <!-- CSS
+	============================================ -->
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="assets/css/vendor/bootstrap.min.css">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="assets/css/vendor/font.awesome.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="assets/css/vendor/ionicons.min.css">
+    <!-- Slick CSS -->
+    <link rel="stylesheet" href="assets/css/plugins/slick.min.css">
+    <!-- Animation -->
+    <link rel="stylesheet" href="assets/css/plugins/animate.min.css">
+    <!-- jQuery Ui -->
+    <link rel="stylesheet" href="assets/css/plugins/jquery-ui.min.css">
+    <!-- Nice Select -->
+    <link rel="stylesheet" href="assets/css/plugins/nice-select.min.css">
+    <!-- Magnific Popup -->
+    <link rel="stylesheet" href="assets/css/plugins/magnific-popup.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link href="css/index.css" rel="stylesheet">
+    <link href="css/share.css" rel="stylesheet">
+    <link href="css/produ.css" rel="stylesheet">
+</head>
+<body>
+<div id="app">
+    <div class="contact-wrapper">
+        <div th:insert="header::header"></div>
+        <!-- Breadcrumb Area Start Here -->
+        <div class="her-banner">
+
+        </div>
+        <!-- Breadcrumb Area End Here -->
+        <!-- cart main wrapper start -->
+        <div class="cart-main-wrapper mt-no-text mb-no-text">
+            <div class="container container-default-2 custom-area">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <!-- Cart Table Area -->
+                        <div class="cart-table table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th class="pro-thumbnail">图片</th>
+                                        <th class="pro-title">产品名</th>
+                                        <th class="pro-price">价格</th>
+                                        <th class="pro-quantity">数量</th>
+                                        <th class="pro-subtotal">总价</th>
+                                        <th class="pro-remove">操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(cart,i) in cartList" :key="cart.id">
+                                        <td class="pro-thumbnail"><a href="#"><img class="img-fluid" :src="cart.imgPath" alt="Product" /></a></td>
+                                        <td class="pro-title"><a href="#">{{cart.name}}</a></td>
+                                        <td class="pro-price"><span>${{cart.price}}</span></td>
+                                        <td class="pro-quantity">
+                                            <div class="quantity">
+                                                <div class="cart-plus-minus" style="margin-left: 80px">
+                                                    <a href="#" @click.prevent="changeMoney(cart,-1)">-</a>
+                                                    <input class="cart-plus-minus-box" v-model="cart.quantity" type="text" style="width: 70px">
+                                                    <a href="#" @click.prevent="changeMoney(cart,1)">+</a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="pro-subtotal"><span>${{cart.price*cart.quantity}}</span></td>
+                                        <td class="pro-remove"><a href="#" @click.prevent="del(cart.id)"><i class="ion-trash-b"></i></a></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="7">
+                                            <a href="#" @click.prevent="mypage(1)">首页</a>
+                                            <a href="#" @click.prevent="mypage(2)">上一页</a>
+                                            [ 当前页:{{pageInfo.pageNum}}最大页:{{pageInfo.pages}}总记录数:{{pageInfo.total}}]
+                                            <a href="#" @click.prevent="mypage(3)">下一页</a>
+                                            <a href="#" @click.prevent="mypage(4)">末页</a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-5 ml-auto">
+                        <!-- Cart Calculation Area -->
+                        <div class="cart-calculator-wrapper">
+                            <div class="cart-calculate-items">
+                                <h3>Cart Totals</h3>
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <tr class="total">
+                                            <td>Total</td>
+                                            <td class="total-amount">${{totalMoney}}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <a href="#" class="btn obrien-button primary-btn d-block">Proceed To Checkout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- cart main wrapper end -->
+        <!-- Footer Area End Here -->
+    </div>
+</div>
+</body>
+
+</html>
+<script th:src="@{/js/axios.min.js}"></script>
+<script th:src="@{/js/vue-2.4.0.js}"></script>
+<script>
+    var vm=new Vue({
+        el:'#app',
+        data:{
+            imgPath:'',
+            name:'',
+            price:'',
+            quantity:1,
+            total:0,
+            pageNum:1,
+            pageInfo : "",
+            cartList:[],
+            totalMoney:0,
+            id:""
+        },
+        methods:{
+            del(id){
+                axios.post("/FruitMall/CartController/deleteById","id="+id).then(data=>{
+                    this.page();
+                })
+            },
+
+            mypage(value){
+                if(value == 1){
+                    this.pageNum = 1;
+                }else if(value == 2){
+                    this.pageNum = this.pageInfo.prePage
+                }else if(value ==3){
+                    this.pageNum = this.pageInfo.nextPage
+                }else{
+                    this.pageNum = this.pageInfo.pages;
+                }
+                this.page();
+            },
+
+            page(){
+                axios.post("/FruitMall/CartController/findAll","pageNum="+this.pageNum).then(data=>{
+                    this.cartList=data.data.data.list;
+                    this.pageInfo = data.data.data;
+
+                    this.caleTotalPrice();
+                })
+
+            },
+            changeMoney(product,way) {
+                this.quantity = 0;
+                this.total = 0;
+                this.id = product.id;
+                if (way > 0) {
+                    product.quantity++;
+                } else {
+                    product.quantity--;
+                    if (product.quantity < 0) {
+                        product.quantity = 0;
+                    }
+                }
+                this.quantity = product.quantity;
+                this.total = product.price * product.quantity;
+                this.updateCart();
+                this.caleTotalPrice();
+
+            },
+            caleTotalPrice() {
+                this.totalMoney = 0;
+                this.cartList.forEach((product) => {
+                    this.totalMoney += product.price * product.quantity;
+                });
+            },
+            updateCart(){
+                axios.post("/FruitMall/CartController/updateCart","id="+this.id+"&total="+this.total+"&quantity="+this.quantity).then(data=>{
+
+                })
+            }
+        },
+        mounted(){
+            this.page()
+        }
+    })
+</script>

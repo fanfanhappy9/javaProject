@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div class="headr" th:fragment="header">
+    <div class="heard-con">
+        <img src="images/logo.jpg" style="margin-top: 7px;float: left;position: absolute">
+        <div class="headr-nav">
+            <ul>
+                <li><a th:href="@{/}" style="color: #4AB344"><span style="color: #4AB344">首页</span></a></li>
+                <li><a th:href="@{/hot}">蔬果热卖</a></li>
+                <li><a th:href="@{/consult}">最新资讯</a></li>
+                <li><a th:href="@{/touch}">联系我们</a></li>
+                <li th:if="${session.user == null || session.user.username == null}">
+                    <span><a th:href="@{/login}">Login</a></span>
+                    <span><a th:href="@{/register}">Register</a></span>
+                </li>
+                <li th:unless="${session.user == null || session.user.username == null}">
+                    <span th:text="${session.user.username}"></span>
+                    <span><a th:href="@{/UserController/logout}">Logout</a></span>
+                </li>
+            </ul>
+        </div>
+        <div id="app">
+            <div class="headr-right">
+                <i class="iconfont" style="font-size: 16px;margin-right: 10px">&#xe7d5;</i>
+                <a th:href="@{/cart}">我的购物车</a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
